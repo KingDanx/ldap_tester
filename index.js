@@ -19,11 +19,14 @@ async function testUserCred() {
   const config = {
     ldapOpts: {
       url: `${LDAP_PROTO}://${LDAP_SERVER}:${LDAP_PORT}`,
-      tlsOptions: { rejectUnauthorized: false },
     },
     userDn: `${LDAP_DOMAIN}\\${username}`,
     userPassword: password,
   };
+
+  if (LDAP_PROTO.toLowerCase() === "ldaps") {
+    config.ldapOpts.tlsOptions = { rejectUnauthorized: false };
+  }
   try {
     console.table({ url: config.ldapOpts.url, userDn: config.userDn });
     const user = await authenticate(config);
